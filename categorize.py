@@ -1,9 +1,4 @@
 from selenium import webdriver
-
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException, TimeoutException, ElementNotInteractableException, ElementClickInterceptedException
 
 from openpyxl import load_workbook
@@ -20,9 +15,17 @@ def main():
 
 	driver = webdriver.Chrome("chromedriver.exe")
 
-	driver.get(f'https://maps.google.com/?q={sheet["F2"].value} {sheet["E2"].value}')
+	for i in range(2, 2528):
 
+		driver.get(f'https://maps.google.com/?q={sheet[f"F{i}"].value} {sheet[f"E{i}"].value}')
+
+		try:
+			print(driver.find_element("xpath", '/html/body/div[3]/div[9]/div[9]/div/div/div[1]/div[2]/div/div[1]/div/div/div[2]/div[1]/div[1]/div[1]/h1/span[1]').text)
+		except NoSuchElementException :
+			print('failed')
 
 
 if __name__ == "__main__":
 	main()
+
+	#//*[@id="QA0Szd"]/div/div/div[1]/div[2]/div/div[1]/div/div/div[2]/div[1]/div[1]/div[1]/h1/span[1]
