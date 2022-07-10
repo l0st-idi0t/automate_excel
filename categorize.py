@@ -135,7 +135,7 @@ def main():
 				flag = False
 
 				for keyword in ["wholesale", "thai", "viet", "india", "mexic", "sushi", "japan", "tokyo", "america", "barbeque", "bbq", "hot pot", "cajun", "seafood", "crab", "buffet"]:
-					if keyword in restaurant_type or keyword in restaurant_title.lower() or keyword in restaurant_description or len([s for s in restaurant_reviews if keyword in s]) != 0:
+					if keyword in restaurant_type or keyword in restaurant_title.lower() or keyword in restaurant_description or len([s for s in restaurant_reviews if keyword in s]) > 0:
 						sheet[f"H{i}"] = types[keyword]
 						print(f'{i}: {restaurant_title} and is {keyword}')
 						flag = True
@@ -161,7 +161,7 @@ def main():
 			return
 
 
-	while i <= 100:
+	while i <= 2527:
 		address = str(sheet[f"E{i}"].value)
 		name = str(sheet[f"F{i}"].value).replace("&", "and").replace("#", "")
 
