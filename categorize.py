@@ -36,7 +36,7 @@ def main():
 
 	driver = webdriver.Chrome("chromedriver.exe")
 
-	i = 49
+	i = 2486
 
 	title = "DUwDvf"
 	description = "div[jsan='t-1S0zc0ZApnU,7.PYvSYb,t-zvBBh-k3a_E']"
@@ -73,7 +73,7 @@ def main():
 
 
 			try:
-				WebDriverWait(driver, timeout=5).until(lambda d: d.find_element(By.CSS_SELECTOR, type_restaurant))
+				WebDriverWait(driver, timeout=7).until(lambda d: d.find_element(By.CSS_SELECTOR, type_restaurant))
 				restaurant_type = driver.find_element(By.CSS_SELECTOR, type_restaurant).text.lower()
 
 				flag = False
@@ -94,8 +94,9 @@ def main():
 			print(f'{i}: {restaurant_title} and type is {restaurant_type}')
 
 			try:
-				WebDriverWait(driver, timeout=5).until(lambda d: d.find_element(By.CLASS_NAME, r_address))
+				WebDriverWait(driver, timeout=7).until(lambda d: d.find_element(By.CLASS_NAME, r_address))
 				restaurant_addr = driver.find_element(By.CLASS_NAME, r_address).text
+				print(restaurant_addr + "this is addr")
 			except Exception as e:
 				sheet[f"H{i}"] = "T"
 				print(f'{i}: Address Not found')
@@ -107,7 +108,7 @@ def main():
 				print("Could not get/find reviews")
 
 			try:
-				WebDriverWait(driver, timeout=5).until(lambda d: d.find_element(By.CSS_SELECTOR, description))
+				WebDriverWait(driver, timeout=7).until(lambda d: d.find_element(By.CSS_SELECTOR, description))
 				restaurant_description = driver.find_element(By.CSS_SELECTOR, description).text.lower()
 			except Exception as e:
 				print('Could not get/find description')
@@ -122,6 +123,8 @@ def main():
 
 				if (fuzz.token_sort_ratio(one, two) < 70 and fuzz.token_sort_ratio(onearr, twoarr) < 85 and fuzz.partial_ratio(one.lower(), two.lower()) < 90):
 					#print(fuzz.token_sort_ratio(one, two), fuzz.token_sort_ratio(onearr, twoarr), fuzz.partial_ratio(one.lower(), two.lower()))
+					# print(f"{i}: {one}")
+					# print(f"{i}: {two}")
 					sheet[f"H{i}"] = "T"
 					print(f'{i}: Addresses do not match')
 					return
@@ -134,7 +137,7 @@ def main():
 			try:
 				flag = False
 
-				for keyword in ["wholesale", "thai", "viet", "india", "mexic", "sushi", "japan", "tokyo", "america", "barbeque", "bbq", "hot pot", "cajun", "seafood", "crab", "buffet"]:
+				for keyword in ["wholesale", "thai", "viet", "india", "mexic", "japan", "tokyo", "america", "barbeque", "bbq", "hot pot", "cajun", "seafood", "crab", "buffet", "sushi"]:
 					if keyword in restaurant_type or keyword in restaurant_title.lower() or keyword in restaurant_description or len([s for s in restaurant_reviews if keyword in s]) > 0:
 						sheet[f"H{i}"] = types[keyword]
 						print(f'{i}: {restaurant_title} and is {keyword}')
@@ -148,8 +151,11 @@ def main():
 
 
 			try:
-				WebDriverWait(driver, timeout=5).until(lambda d: d.find_element(By.CLASS_NAME, services))
-				sheet[f"H{i}"] = types[driver.find_element(By.CLASS_NAME, services).text.lower().split('\n')[0]]
+				WebDriverWait(driver, timeout=7).until(lambda d: d.find_element(By.CLASS_NAME, services))
+				service = driver.find_element(By.CLASS_NAME, services).text.lower().split('\n')[0]
+				sheet[f"H{i}"] = types[service]
+				print(f"{i}: {service}")
+				return
 			except Exception as e:
 				sheet[f"H{i}"] = "T"
 				print(f'{i}: No services')
@@ -171,7 +177,7 @@ def main():
 			checks(address, name)
 		except Exception as e:
 			try:
-				WebDriverWait(driver, timeout=5).until(lambda d: d.find_element(By.CLASS_NAME, "hfpxzc"))
+				WebDriverWait(driver, timeout=7).until(lambda d: d.find_element(By.CLASS_NAME, "hfpxzc"))
 				driver.find_element(By.CLASS_NAME, "hfpxzc").click()
 				checks(address, name)
 			except Exception as e:
