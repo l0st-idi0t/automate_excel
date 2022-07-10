@@ -36,7 +36,7 @@ def main():
 
 	driver = webdriver.Chrome("chromedriver.exe")
 
-	i = 62
+	i = 49
 
 	title = "DUwDvf"
 	description = "div[jsan='t-1S0zc0ZApnU,7.PYvSYb,t-zvBBh-k3a_E']"
@@ -90,7 +90,7 @@ def main():
 			except Exception as e:
 				pass
 
-			WebDriverWait(driver, timeout=2).until(lambda d: d.find_element(By.CSS_SELECTOR, type_restaurant))
+			WebDriverWait(driver, timeout=2).until(lambda d: d.find_element(By.CLASS_NAME, title))
 			restaurant_title = driver.find_element(By.CLASS_NAME, title).text
 
 			print(f'{i}: {restaurant_title} and type is {restaurant_type}')
@@ -169,7 +169,7 @@ def main():
 			return
 
 
-	while i <= 100:
+	while i <= 2527:
 		address = str(sheet[f"E{i}"].value)
 		name = str(sheet[f"F{i}"].value).replace("&", "and").replace("#", "")
 
