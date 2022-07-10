@@ -48,7 +48,7 @@ def main():
 	def checks(address, name):
 			types = dict.fromkeys(['thai', 'viet', 'india'], 'N')
 			types.update(dict.fromkeys(['buffet'], 'F'))
-			types.update(dict.fromkeys(['cajun', 'seafood'], 'I'))
+			types.update(dict.fromkeys(['cajun', 'seafood', 'crab'], 'I'))
 			types.update(dict.fromkeys(['wholesale'], 'W'))
 			types.update(dict.fromkeys(['sushi', 'japan', 'tokyo'], 'L'))
 			types.update(dict.fromkeys(['barbeque', 'bbq'], 'K'))
@@ -56,7 +56,7 @@ def main():
 			types.update(dict.fromkeys(['mexic'], 'Q'))
 			types.update(dict.fromkeys(['dine-in'], 'G'))
 			types.update(dict.fromkeys(['takeout, drive-through'], 'H'))
-			types.update(dict.fromkeys(['american'], 'M'))
+			types.update(dict.fromkeys(['america'], 'M'))
 
 			restaurant_reviews = []
 			restaurant_addr = ""
@@ -76,27 +76,29 @@ def main():
 				WebDriverWait(driver, timeout=2).until(lambda d: d.find_element(By.CSS_SELECTOR, type_restaurant))
 				restaurant_type = driver.find_element(By.CSS_SELECTOR, type_restaurant).text.lower()
 
+				flag = False
 				for keyword in ["market", "store", "grocery"]:
 
 					if keyword in restaurant_type:
 						sheet[f"H{i}"] = "U"
 						print(f'{i}: Not restaurant')
+						flag = True
 						break
-				return
+				if flag:
+					return 
 			except Exception as e:
 				pass
 
 			restaurant_title = driver.find_element("xpath", title).text
 
-
 			print(f'{i}: {restaurant_title} and type is {restaurant_type}')
 
 			try:
-				WebDriverWait(driver, timeout=2).until(lambda d: d.find_element(By.CLASS_NAME, r_address))
+				WebDriverWait(driver, timeout=5).until(lambda d: d.find_element(By.CLASS_NAME, r_address))
 				restaurant_addr = driver.find_element(By.CLASS_NAME, r_address).text
 			except Exception as e:
 				sheet[f"H{i}"] = "T"
-				print(f'{i}: Not found')
+				print(f'{i}: Address Not found')
 				return
 
 			try:
@@ -120,31 +122,36 @@ def main():
 
 				if (fuzz.token_sort_ratio(one, two) < 70 and fuzz.token_sort_ratio(onearr, twoarr) < 85 and fuzz.partial_ratio(one.lower(), two.lower()) < 90):
 					sheet[f"H{i}"] = "T"
-					print(f'{i}: Not found')
+					print(f'{i}: Addresses do not match')
 					return
 			except Exception as e:
 				sheet[f"H{i}"] = "T"
-				print(f'{i}: Not found')
+				print(f'{i}: Some problem with address comparison')
 				return
 
 
 			try:
-				for keyword in ["wholesale", "thai", "viet", "india", "mexic", "sushi", "japan", "tokyo", "american", "barbeque", "bbq", "hot pot", "cajun", "seafood", "buffet"]:
+				flag = False
+
+				for keyword in ["wholesale", "thai", "viet", "india", "mexic", "sushi", "japan", "tokyo", "america", "barbeque", "bbq", "hot pot", "cajun", "seafood", "crab", "buffet"]:
 					if keyword in restaurant_type or keyword in restaurant_title.lower() or keyword in restaurant_description or len([s for s in restaurant_reviews if keyword in s]) != 0:
 						sheet[f"H{i}"] = types[keyword]
 						print(f'{i}: {restaurant_title} and is {keyword}')
+						flag = True
 						break
-				return
+				
+				if flag:
+					return
 			except Exception as e:
 				print('problem')
 
 
 			try:
-				WebDriverWait(driver, timeout=2).until(lambda d: d.find_element(By.CLASS_NAME, services))
+				WebDriverWait(driver, timeout=5).until(lambda d: d.find_element(By.CLASS_NAME, services))
 				sheet[f"H{i}"] = types[driver.find_element(By.CLASS_NAME, services).text.lower().split('\n')[0]]
 			except Exception as e:
 				sheet[f"H{i}"] = "T"
-				print(f'{i}: Not found')
+				print(f'{i}: No services')
 				return
 
 
@@ -153,9 +160,9 @@ def main():
 			return
 
 
-	while i <= 2527:
-		address = sheet[f"E{i}"].value
-		name = sheet[f"F{i}"].value.replace("&", "and").replace("#", "")
+	while i <= 100:
+		address = str(sheet[f"E{i}"].value)
+		name = str(sheet[f"F{i}"].value).replace("&", "and").replace("#", "")
 
 		driver.get(f'https://maps.google.com/?q={name} {address}')
 
