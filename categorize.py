@@ -36,7 +36,7 @@ def main():
 
 	driver = webdriver.Chrome("chromedriver.exe")
 
-	i = 2486
+	i = 62
 
 	title = "DUwDvf"
 	description = "div[jsan='t-1S0zc0ZApnU,7.PYvSYb,t-zvBBh-k3a_E']"
@@ -64,6 +64,7 @@ def main():
 			restaurant_description = ""
 
 			try:
+				WebDriverWait(driver, timeout=2).until(lambda d: d.find_element(By.CSS_SELECTOR, 'span[style="color:#D93025"]'))
 				driver.find_element(By.CSS_SELECTOR, 'span[style="color:#D93025"]')
 				sheet[f"H{i}"] = "V"
 				print(f'{i}: {driver.find_element(By.CLASS_NAME, title).text} and type is closed')
@@ -73,7 +74,7 @@ def main():
 
 
 			try:
-				WebDriverWait(driver, timeout=7).until(lambda d: d.find_element(By.CSS_SELECTOR, type_restaurant))
+				WebDriverWait(driver, timeout=3).until(lambda d: d.find_element(By.CSS_SELECTOR, type_restaurant))
 				restaurant_type = driver.find_element(By.CSS_SELECTOR, type_restaurant).text.lower()
 
 				flag = False
@@ -89,12 +90,13 @@ def main():
 			except Exception as e:
 				pass
 
+			WebDriverWait(driver, timeout=2).until(lambda d: d.find_element(By.CSS_SELECTOR, type_restaurant))
 			restaurant_title = driver.find_element(By.CLASS_NAME, title).text
 
 			print(f'{i}: {restaurant_title} and type is {restaurant_type}')
 
 			try:
-				WebDriverWait(driver, timeout=7).until(lambda d: d.find_element(By.CLASS_NAME, r_address))
+				WebDriverWait(driver, timeout=3).until(lambda d: d.find_element(By.CLASS_NAME, r_address))
 				restaurant_addr = driver.find_element(By.CLASS_NAME, r_address).text
 				print(restaurant_addr + "this is addr")
 			except Exception as e:
@@ -108,7 +110,7 @@ def main():
 				print("Could not get/find reviews")
 
 			try:
-				WebDriverWait(driver, timeout=7).until(lambda d: d.find_element(By.CSS_SELECTOR, description))
+				WebDriverWait(driver, timeout=3).until(lambda d: d.find_element(By.CSS_SELECTOR, description))
 				restaurant_description = driver.find_element(By.CSS_SELECTOR, description).text.lower()
 			except Exception as e:
 				print('Could not get/find description')
@@ -151,7 +153,7 @@ def main():
 
 
 			try:
-				WebDriverWait(driver, timeout=7).until(lambda d: d.find_element(By.CLASS_NAME, services))
+				WebDriverWait(driver, timeout=3).until(lambda d: d.find_element(By.CLASS_NAME, services))
 				service = driver.find_element(By.CLASS_NAME, services).text.lower().split('\n')[0]
 				sheet[f"H{i}"] = types[service]
 				print(f"{i}: {service}")
@@ -167,7 +169,7 @@ def main():
 			return
 
 
-	while i <= 2527:
+	while i <= 100:
 		address = str(sheet[f"E{i}"].value)
 		name = str(sheet[f"F{i}"].value).replace("&", "and").replace("#", "")
 
@@ -177,7 +179,7 @@ def main():
 			checks(address, name)
 		except Exception as e:
 			try:
-				WebDriverWait(driver, timeout=7).until(lambda d: d.find_element(By.CLASS_NAME, "hfpxzc"))
+				WebDriverWait(driver, timeout=2).until(lambda d: d.find_element(By.CLASS_NAME, "hfpxzc"))
 				driver.find_element(By.CLASS_NAME, "hfpxzc").click()
 				checks(address, name)
 			except Exception as e:
