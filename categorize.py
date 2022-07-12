@@ -2,6 +2,7 @@ from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, TimeoutException, ElementNotInteractableException, ElementClickInterceptedException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.chrome.options import Options
 
 from openpyxl import load_workbook
 from automate import changeActive
@@ -34,7 +35,10 @@ def main():
 
 	sheet = wb.active
 
-	driver = webdriver.Chrome("chromedriver.exe")
+	options = Options()
+	options.headless = True
+
+	driver = webdriver.Chrome("chromedriver.exe", options=options)
 
 	i = 49
 
@@ -139,13 +143,26 @@ def main():
 			try:
 				flag = False
 
-				for keyword in ["wholesale", "thai", "viet", "india", "mexic", "japan", "tokyo", "america", "barbeque", "bbq", "hot pot", "cajun", "seafood", "crab", "buffet", "sushi"]:
-					if keyword in restaurant_type or keyword in restaurant_title.lower() or keyword in restaurant_description or len([s for s in restaurant_reviews if keyword in s]) > 0:
-						sheet[f"H{i}"] = types[keyword]
-						print(f'{i}: {restaurant_title} and is {keyword}')
-						flag = True
+				for var in [restaurant_type, restaurant_title, restaurant_description]:
+					for keyword in ["wholesale", "thai", "viet", "india", "mexic", "japan", "tokyo", "america", "barbeque", "bbq", "hot pot", "cajun", "seafood", "crab", "buffet", "sushi"]:
+						if keyword in var.lower():
+							sheet[f"H{i}"] = types[keyword]
+							print(f'{i}: {restaurant_title} and is {keyword}')
+							flag = True
+							break
+
+					if flag:
 						break
-				
+
+
+				if not flag:
+					for keyword in ["wholesale", "thai", "viet", "india", "mexic", "japan", "tokyo", "america", "barbeque", "bbq", "hot pot", "cajun", "seafood", "crab", "buffet", "sushi"]:
+						if len([s for s in restaurant_reviews if keyword in s]) > 0:
+							sheet[f"H{i}"] = types[keyword]
+							print(f'{i}: {restaurant_title} and is {keyword}')
+							flag = True
+							break
+
 				if flag:
 					return
 			except Exception as e:
